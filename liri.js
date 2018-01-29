@@ -1,14 +1,9 @@
 require ('dotenv').config();
 var keys = require ('./keys.js');
-var Spotify = require ('spotify');
+var Spotify = require ('node-spotify-api');
 var Twitter = require ('twitter');
 var omdb = require ('omdb');
 var inquirer = require ('inquirer');
-
-var Spotify = function(keys) {
-    this.keys = keys;
-}
-
 
 var clientSpotify = new Spotify(keys.spotify);
 var clientTwitter = new Twitter(keys.twitter);
@@ -17,16 +12,15 @@ inquirer.prompt([
     {
         type: 'list',
         message: 'What would you like to do?',
-        choices: ['My last 20 tweets', 'spotify this song', 'movie this', 'do what it says'],
+        choices: ['My last 20 tweets', 'spotify this', 'movie this', 'do what it says'],
         name: "action"
     }
 ])
 .then(function(response) {
     if (response.action === 'My last 20 tweets') {
         getTweets();  
-    } else if (response.action === 'spotify this song') {
+    } else if (response.action === 'spotify this') {
         spotifyThis();
-        console.log("You would like to spotify a song");
     } else if (response.action === 'movie this') {
         console.log("you would like to movie this");
         movieThis();
@@ -46,7 +40,21 @@ var getTweets = function() {
 }
 
 var spotifyThis = function() {
-
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What song would you like to learn more about??(If no song is entered - the default song is "The sign" by Ace of base',
+            name: 'song'
+        }
+    ])
+    .then(function(response) {
+        clientSpotify.search({ type: 'track', query: 'The Sign' }, function(err, data) {
+            if (err) {
+              return console.log('Error occurred: ' + err);
+            }          
+        console.log(data);
+        });
+    });
 }
 
 var movieThis = function() {
