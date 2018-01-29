@@ -9,17 +9,6 @@ var Spotify = function(keys) {
     this.keys = keys;
 }
 
-//var Twitter = function(keys) {
-//    this.keys = keys;
-//    this.getTweets = function() {
-//        console.log(this.keys);
-//            this.get('favorites/list', function(error, tweets, response) {
-//            if(error) throw error;
-//            console.log(tweets);  // The favorites. 
-//            console.log(response);  // Raw response object. 
-//          });
-//    }
-//}
 
 var clientSpotify = new Spotify(keys.spotify);
 var clientTwitter = new Twitter(keys.twitter);
@@ -28,15 +17,13 @@ inquirer.prompt([
     {
         type: 'list',
         message: 'What would you like to do?',
-        choices: ['my tweets', 'spotify this song', 'movie this', 'do what it says'],
+        choices: ['My last 20 tweets', 'spotify this song', 'movie this', 'do what it says'],
         name: "action"
     }
 ])
 .then(function(response) {
-    if (response.action === 'my tweets') {
-        clientTwitter.get('search/tweets', {q: 'node.js'}, function(error, tweets, response) {
-        console.log(tweets);
-         });
+    if (response.action === 'My last 20 tweets') {
+        getTweets();  
     } else if (response.action === 'spotify this song') {
         spotifyThis();
         console.log("You would like to spotify a song");
@@ -48,6 +35,15 @@ inquirer.prompt([
         doWhatItSays();
     }
 });
+
+var getTweets = function() {
+    clientTwitter.get('search/tweets', {q: 'JaimeBootCamp', count: 20, result_type: 'recent'}, function(error, tweets, response) {
+    for (var i = 0; i < 20; i++){
+    console.log(" Created At: " + tweets.statuses[i].created_at + "tweet: " + tweets.statuses[i].text);
+    console.log("--------------------------------------------------------------------");
+    }
+    });
+}
 
 var spotifyThis = function() {
 
