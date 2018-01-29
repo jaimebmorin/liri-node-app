@@ -5,27 +5,24 @@ var Twitter = require ('twitter');
 var omdb = require ('omdb');
 var inquirer = require ('inquirer');
 
-
 var Spotify = function(keys) {
     this.keys = keys;
 }
 
-var Twitter = function(keys) {
-    this.keys = keys;
-    this.getTweets = function() {
-        console.log(this.keys);
-        this.get('favorites/list', function(error, tweets, response) {
-            if(error) throw error;
-            console.log(tweets);  // The favorites. 
-            console.log(response);  // Raw response object. 
-          });
-    }
-}
+//var Twitter = function(keys) {
+//    this.keys = keys;
+//    this.getTweets = function() {
+//        console.log(this.keys);
+//            this.get('favorites/list', function(error, tweets, response) {
+//            if(error) throw error;
+//            console.log(tweets);  // The favorites. 
+//            console.log(response);  // Raw response object. 
+//          });
+//    }
+//}
 
-
-var spotify = new Spotify(keys.spotify);
-var twitter = new Twitter(keys.twitter);
-
+var clientSpotify = new Spotify(keys.spotify);
+var clientTwitter = new Twitter(keys.twitter);
 
 inquirer.prompt([
     {
@@ -37,7 +34,9 @@ inquirer.prompt([
 ])
 .then(function(response) {
     if (response.action === 'my tweets') {
-        twitter.getTweets();
+        clientTwitter.get('search/tweets', {q: 'node.js'}, function(error, tweets, response) {
+        console.log(tweets);
+         });
     } else if (response.action === 'spotify this song') {
         spotifyThis();
         console.log("You would like to spotify a song");
@@ -49,7 +48,6 @@ inquirer.prompt([
         doWhatItSays();
     }
 });
-
 
 var spotifyThis = function() {
 
