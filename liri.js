@@ -43,25 +43,21 @@ var spotifyThis = function() {
     inquirer.prompt([
         {
             type: 'input',
-            message: 'What song would you like to learn more about??(If no song is entered - the default song is "The sign" by Ace of base',
+            message: 'What song would you like to learn more about??(If no song is entered - the default song is "Fade to Black" by Metallica',
             name: 'song'
         }
     ])
     .then(function(response) {
-        clientSpotify.search({ type: 'track', query: "the sign" }, function(err, data) {
+        if (response.song === "") {response.song = "fade to black"};
+        clientSpotify.search({ type: 'track', query: response.song}, function(err, data) {
             if (err) {
               return console.log('Error occurred: ' + err);
             }
-            console.log(data);
-            var songInfo = data.tracks.items;
-            for(var i = 0; i< 5; i++){
-                console.log(songInfo[i]);
-                if (songInfo[i] != undefined) {
-                    var spotifyResults = "Artist: " + songinfo[i].artists[0].name;
-                    console.log(spotifyResults);
-                }
-            }     
-        });
+            console.log(data.tracks.items[0].artists[0].name)
+            console.log(data.tracks.items[0].album.name)
+            console.log(data.tracks.items[0].name)
+            console.log(data.tracks.items[0].preview_url)
+            });
     });
 }
 
