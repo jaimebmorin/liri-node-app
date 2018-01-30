@@ -48,11 +48,19 @@ var spotifyThis = function() {
         }
     ])
     .then(function(response) {
-        clientSpotify.search({ type: 'track', query: 'The Sign' }, function(err, data) {
+        clientSpotify.search({ type: 'track', query: "the sign" }, function(err, data) {
             if (err) {
               return console.log('Error occurred: ' + err);
-            }          
-        console.log(data);
+            }
+            console.log(data);
+            var songInfo = data.tracks.items;
+            for(var i = 0; i< 5; i++){
+                console.log(songInfo[i]);
+                if (songInfo[i] != undefined) {
+                    var spotifyResults = "Artist: " + songinfo[i].artists[0].name;
+                    console.log(spotifyResults);
+                }
+            }     
         });
     });
 }
