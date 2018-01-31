@@ -2,7 +2,7 @@ require ('dotenv').config();
 var keys = require ('./keys.js');
 var Spotify = require ('node-spotify-api');
 var Twitter = require ('twitter');
-var omdb = require ('omdb');
+var request = require ('request');
 var inquirer = require ('inquirer');
 
 var clientSpotify = new Spotify(keys.spotify);
@@ -53,16 +53,37 @@ var spotifyThis = function() {
             if (err) {
               return console.log('Error occurred: ' + err);
             }
-            console.log(data.tracks.items[0].artists[0].name)
-            console.log(data.tracks.items[0].album.name)
-            console.log(data.tracks.items[0].name)
-            console.log(data.tracks.items[0].preview_url)
+            console.log("Artist: " + data.tracks.items[0].artists[0].name)
+            console.log("Album: " + data.tracks.items[0].album.name)
+            console.log("Track: " + data.tracks.items[0].name)
+            console.log("Preview URL: " + data.tracks.items[0].preview_url)
             });
     });
 }
 
 var movieThis = function() {
-
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What movie would you like to know more about? If no movie is entered, the default movie is Mr Nobody',
+            name: 'movie'
+        }
+    ])
+    .then(function(response) {
+        if (response.movie === '') {response.movie = 'Mr. Nobody'};
+        var url = 'http://www.omdbapi.com/?t=' + response.movie + '&apikey=b6af38b3';
+        request(url, function(err,res,body) {
+            let json = JSON.parse(body);
+            console.log("Title: " + json.Title);
+            console.log("Year: " + json.Year);
+            console.log("IMDB Rating: " + json.imdbRating);
+            console.log("Rotten Tomatoes Rating: "+ json.Ratings[1].Value);
+            console.log("Country: " + json.Country);
+            console.log("Language: " + json.Language);
+            console.log("Actors: " + json.Actors);
+            //console.log(json);
+            });
+    });
 }
 
 var doWhatItSays = function() {
